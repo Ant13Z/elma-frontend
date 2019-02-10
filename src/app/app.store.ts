@@ -22,4 +22,8 @@ export class AppStore {
     };
     this.tempItems.push(item);
   }
+
+  async edit(data: ItemJson){
+
+  }
 }

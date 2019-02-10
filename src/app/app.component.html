@@ -47,13 +47,14 @@
             class="form-control"
             id="formGroupInputName"
             name="name"
-
             #name="ngModel"
-            [ngModel]="form['name']"
+            [(ngModel)]="editedItem.name"
             required
             pattern="[a-zA-Z0-9а-яА-ЯёЁ]{1,255}"
+            [attr.disabled]="method == 'edit' ? true : null"
+            (change)="checkUniq(editedItem.name)"
           />
-          <ng-template [ngIf]="!name.valid">
+          <ng-template *ngIf="!name.valid; else invalidUniq">
             <div class="input-group-append" *ngIf="!name.valid">
               <span
                 class="input-group-text list-group-item-danger"
@@ -63,6 +64,11 @@
                 class="input-group-text list-group-item-danger"
                 *ngIf="name.value && !name.valid"
               >Недопустимое значение</span>
+            </div>
+          </ng-template>
+          <ng-template #invalidUniq>
+            <div class="input-group-append" *ngIf="!nameUniq">
+              <span class="input-group-text list-group-item-danger">Не уникальное значение</span>
             </div>
           </ng-template>
         </div>
@@ -76,7 +82,7 @@
             id="formGroupInputCount"
             name="count"
             #count="ngModel"
-            [(ngModel)]="form['count']"
+            [(ngModel)]="editedItem.count"
             required
             pattern="[0-9]{1,4}"
           />
@@ -100,7 +106,7 @@
           class="form-control"
           id="formGroupInputAbout"
           name="description"
-          [(ngModel)]="form['description']"
+          [(ngModel)]="editedItem.description"
         ></textarea>
       </div>
     </form>
@@ -109,8 +115,8 @@
     <button
       type="button"
       class="btn btn-secondary"
-      (click)="save(form)"
-      [disabled]="form.invalid"
+      (click)="save()"
+      [disabled]="form.invalid || !nameUniq"
     >Сохранить</button>
     <button type="button" class="btn btn-outline-dark" data-dismiss="modal" (click)="modal.close()">Закрыть</button>
   </div>

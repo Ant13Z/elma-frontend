@@ -25,12 +25,15 @@ export class HttpService{
     }));
   }
 
-  setData(data: NgForm) : Observable<ItemJson>{
+  setData(data: ItemJson) : Observable<ItemJson>{
     const item = <ItemJson>{
-      name: data["name"],
-      count: Number(data["count"]),
-      description: data["description"]
+      name: data.name,
+      count: Number(data.count),
+      description: data.description
     };
+    //на самом деле нам не особо критично отображать пользователю именно те данные которые ушли в базу
+    //т.к. фильтрация на фронте и на беке одинакова, по этому мы можем возвращать здесь не json, а
+    //просто 1\0
     return this.http.post(this.apiUrl, item).pipe(map(data=>{
       if (data !== null) {
         return <ItemJson>{
@@ -39,26 +42,23 @@ export class HttpService{
           description: data["Description"]
         }
       } else {
-        //дубль
-        return <ItemJson>{
-          name: "Дубль",
-          count: 1,
-          description: "описание дубля"
-        }
+        //здесь можно сделать доп обработку дублей
       }
     }));
-
   }
 
-  /*putData(item: ItemJson) : Observable<ItemJson>{
-    const data = <ItemJson>{
-      name: item.name,
-      count: Number(item.count),
-      description: item.description
+  putData(data: ItemJson) : Observable<ItemJson>{
+    const item = <ItemJson>{
+      name: data.name,
+      count: Number(data.count),
+      description: data.description
     };
-
-    return this.http.put(this.apiUrl, data).pipe(map(data=>{
-      console.log(data);
+    return this.http.put(this.apiUrl, item).pipe(map(data=>{
+      return <ItemJson>{
+        name: data["Name"],
+        count: data["Count"],
+        description: data["Description"]
+      }
     }));
-  }*/
+  }
 }
